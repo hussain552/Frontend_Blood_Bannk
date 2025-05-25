@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+.hero-section {
+  height: 80vh;
+  background: url("https://source.unsplash.com/1600x900/?blood,donation") no-repeat center center/cover;
+  position: relative;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.cta-section {
+  background: #dc3545;
+}
+
+.shadow-lg {
+  border-radius: 12px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.shadow-lg:hover {
+  transform: translateY(-5px);
+}

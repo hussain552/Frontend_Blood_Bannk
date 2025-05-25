@@ -1,0 +1,83 @@
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background: #2a1a1f;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+  }
+  
+  .branding {
+    padding: 20px;
+    border-bottom: 2px solid #8b0000;
+    margin-bottom: 30px;
+  }
+  
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .nav-item {
+    color: white;
+    text-decoration: none;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-radius: 8px;
+    transition: all 0.3s;
+  }
+  
+  .nav-item:hover {
+    background: #8b0000;
+  }
+  
+  .nav-item.active {
+    background: #8b0000;
+  }
+  
+  .main-content {
+    flex: 1;
+    margin-left: 250px;
+    background: #f9f9f9;
+  }
+  
+  .dashboard-header {
+    background: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .logout-btn {
+    background: #8b0000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .content-area {
+    padding: 30px;
+  }
+  
+  /* Blood bank theme colors */
+  h2, h3 {
+    color: #8b0000;
+  }
+  
+  /* Add blood drop icon in branding */
+  .branding::before {
+    content: '🩸';
+    margin-right: 10px;
+  }
