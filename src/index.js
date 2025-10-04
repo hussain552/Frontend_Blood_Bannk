@@ -42,7 +42,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="requestPage" element={<RequestPage/>} />
             <Route path="profile" element={<Profile/>} />
             <Route path="forgetpassword" element={<Forgettpassword/>} />
-            <Route path="reset-password/:token" element={<ResetPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+
 
             {/* Admin  */}
             <Route path="/admin/Dashbord" element={< AdminDashboard />} />
