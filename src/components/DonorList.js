@@ -31,12 +31,28 @@ const DonorList = () => {
         });
     };
 
+    // --- NEW: Filter Logic to hide donors in Cooling Period ---
+    const availableDonors = donors.filter((donor) => {
+        // 1. If restrictedUntil is null or empty, they are available.
+        if (!donor.restrictedUntil) return true;
+
+        // 2. If a date exists, compare it with the current time.
+        // If the restricted date is in the past (<= today), they are available.
+        // If the restricted date is in the future, they are hidden.
+        const restrictedDate = new Date(donor.restrictedUntil);
+        const today = new Date();
+        
+        return restrictedDate <= today;
+    });
+
     return (
         <div className="container mx-auto p-4">
             <h2 className="text-2xl font-bold mb-4">Blood Donors</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {donors.length > 0 ? (
-                    donors.map((donor) => (
+                {/* Changed donors.length to availableDonors.length */}
+                {availableDonors.length > 0 ? (
+                    // Changed donors.map to availableDonors.map
+                    availableDonors.map((donor) => (
                         <div key={donor._id} className="p-4 border rounded-lg shadow-md">
                             <h3 className="text-lg font-semibold">{donor.fullName}</h3>
                             <p><strong>Blood Group:</strong> {donor.bloodGroup}</p>

@@ -32,10 +32,24 @@ const DonorList = () => {
         });
     };
 
-    const filteredDonors = donors.filter((donor) => 
-        donor.bloodGroup.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        donor.address.toLowerCase().includes(searchAddress.toLowerCase())
-    );
+    const filteredDonors = donors.filter((donor) => {
+        // 1. Search Filters
+        const matchesGroup = donor.bloodGroup.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesAddress = donor.address.toLowerCase().includes(searchAddress.toLowerCase());
+
+        // 2. Cooling Period Filter (Check if available)
+        let isAvailable = true;
+        if (donor.restrictedUntil) {
+            const restrictedDate = new Date(donor.restrictedUntil);
+            const today = new Date();
+            // If restricted date is in the future, they are NOT available
+            if (restrictedDate > today) {
+                isAvailable = false;
+            }
+        }
+
+        return matchesGroup && matchesAddress && isAvailable;
+    });
 
     return (
         <div className="container mx-auto p-4">

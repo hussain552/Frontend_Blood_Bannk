@@ -9,6 +9,15 @@ const validateMobile = (mobile) => /^\d{10}$/.test(mobile);
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
+// Cooling Period Options Configuration
+const COOLING_OPTIONS = [
+  { label: 'Whole Blood (90 days)', days: 90 },
+  { label: 'Platelets (14 days)', days: 14 },
+  { label: 'Plasma (28 days)', days: 28 },
+  { label: 'Double Red Cells (120 days)', days: 120 },
+  { label: 'Disable/Remove Cooling Period', days: 0 }
+];
+
 const DonorManagement = () => {
   const [donors, setDonors] = useState([]);
   const [formData, setFormData] = useState({
@@ -21,6 +30,7 @@ const DonorManagement = () => {
     address: "",
     message: "",
     password: "",
+    restrictedUntil: null, // Added to track cooling period in state
   });
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -65,6 +75,26 @@ const DonorManagement = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // --- NEW: Handle Cooling Period Dropdown ---
+  const handleCoolingChange = (e) => {
+    const days = parseInt(e.target.value);
+    
+    // Create new object to update state
+    let newRestrictedDate = null;
+
+    if (days > 0) {
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + days);
+      newRestrictedDate = futureDate.toISOString();
+    } 
+    // If days is 0 (Disable), newRestrictedDate remains null
+
+    setFormData((prev) => ({ 
+        ...prev, 
+        restrictedUntil: newRestrictedDate 
+    }));
+  };
+
   // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,7 +114,9 @@ const DonorManagement = () => {
 
     try {
       if (editingId) {
+        // Extract restrictedUntil to ensure it gets sent to backend
         const { password, bloodGroup, ...updateData } = formData;
+        
         // Corrected PUT endpoint
         const response = await axios.put(
           `https://blood-donor-8q2v.onrender.com/api/editingId/${editingId}`,
@@ -141,8 +173,17 @@ const DonorManagement = () => {
       address: "",
       message: "",
       password: "",
+      restrictedUntil: null, // Reset this too
     });
     setEditingId(null);
+  };
+
+  // Helper to format date for display (Visual only)
+  const getRestrictionStatus = () => {
+    if (!formData.restrictedUntil) return "Status: Available (No Cooling Period)";
+    const date = new Date(formData.restrictedUntil);
+    if (date < new Date()) return "Status: Available (Cooling Period Expired)";
+    return `Status: In Cooling Period until ${date.toLocaleDateString()}`;
   };
 
   return (
@@ -156,6 +197,38 @@ const DonorManagement = () => {
       )}
 
       <form onSubmit={handleSubmit} className="bg-white p-4 shadow-md rounded-md mb-6">
+        
+        {/* --- NEW: Cooling Period Section (Visible only when Editing) --- */}
+        {editingId && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
+            <h3 className="font-semibold text-blue-800 mb-2">Update Donation Status (Cooling Period)</h3>
+            
+            <div className="text-sm text-gray-600 mb-2 font-medium">
+               {getRestrictionStatus()}
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Set New Cooling Period</label>
+              <select
+                onChange={handleCoolingChange}
+                className="input-field border-blue-300"
+                defaultValue=""
+              >
+                <option value="" disabled>Select Donation Type to Update Date</option>
+                {COOLING_OPTIONS.map((option, index) => (
+                    <option key={index} value={option.days}>
+                        {option.label}
+                    </option>
+                ))}
+              </select>
+              <p className="text-xs text-gray-500">
+                Selecting an option will automatically calculate the release date based on today.
+              </p>
+            </div>
+          </div>
+        )}
+        {/* --- End Cooling Period Section --- */}
+
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <label className="block text-sm font-medium">Full Name</label>
